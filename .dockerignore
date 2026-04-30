@@ -1,7 +1,21 @@
 .git/
 .github/
 .vs/
+.vscode/
+.idea/
+.config/
+.kiro/
+
+# Build output
 cdk.out/
 media/
 **/[Bb]in/
 **/[Oo]bj/
+
+# Tooling / editor
+*.user
+*.suo
+
+# Documentation not needed in the image
+MigrationSummary.md
+MigrationPlan.md
