@@ -1,5 +1,6 @@
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,8 +42,11 @@ namespace Bookstore.Data
                 new ReferenceDataItem(ReferenceDataType.Publisher, "Aurora Publishing") { Id = 24 }
             };
 
-            context.ReferenceData.AddRange(referenceDataItems);
-            context.SaveChanges();
+            InsertWithIdentity(context, "ReferenceData", () =>
+            {
+                context.ReferenceData.AddRange(referenceDataItems);
+                context.SaveChanges();
+            });
 
             if (context.Book.Any()) return;
 
@@ -57,8 +61,24 @@ namespace Bookstore.Data
                 new Book("My Search For Meaning", "Mateo Jackson", "4558786554", 22, 3, 8, 7, 5M, 15, null, null, "/Content/Images/coverimages/mysearchformeaning.png") { Id = 8 }
             };
 
-            context.Book.AddRange(books);
-            context.SaveChanges();
+            InsertWithIdentity(context, "Book", () =>
+            {
+                context.Book.AddRange(books);
+                context.SaveChanges();
+            });
+        }
+
+        // EF Core treats integer primary keys as IDENTITY by default on SQL Server.
+        // The seed data above assigns explicit Id values (required because other
+        // seed rows reference them as foreign keys), so we need to enable
+        // IDENTITY_INSERT for the duration of the insert and then disable it again.
+        private static void InsertWithIdentity(ApplicationDbContext context, string tableName, System.Action insertAction)
+        {
+            using var transaction = context.Database.BeginTransaction();
+            context.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] ON");
+            insertAction();
+            context.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT [{tableName}] OFF");
+            transaction.Commit();
         }
     }
 }

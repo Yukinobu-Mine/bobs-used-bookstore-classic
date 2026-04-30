@@ -165,7 +165,6 @@ else
         {
             options.LoginPath = "/Authentication/Login";
         });
-    builder.Services.AddScoped<LocalAuthenticationMiddleware>();
 }
 
 builder.Services.AddAuthorization();
@@ -176,7 +175,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
+    db.Database.Migrate();
     BookstoreDbInitializer.Seed(db);
 }
 
