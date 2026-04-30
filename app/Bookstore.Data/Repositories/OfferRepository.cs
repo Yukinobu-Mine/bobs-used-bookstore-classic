@@ -1,10 +1,9 @@
-﻿using Amazon.Auth.AccessControlPolicy;
 using Bookstore.Domain;
 using Bookstore.Domain.Offers;
 using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,7 +34,7 @@ namespace Bookstore.Data.Repositories
 
         async Task IOfferRepository.AddAsync(Offer offer)
         {
-            await Task.Run(() => dbContext.Offer.Add(offer));
+            await dbContext.Offer.AddAsync(offer);
         }
 
         Task<Offer> IOfferRepository.GetAsync(int id)
@@ -48,40 +47,27 @@ namespace Bookstore.Data.Repositories
             var query = dbContext.Offer.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filters.Author))
-            {
                 query = query.Where(x => x.Author.Contains(filters.Author));
-            }
 
             if (!string.IsNullOrWhiteSpace(filters.BookName))
-            {
                 query = query.Where(x => x.BookName.Contains(filters.BookName));
-            }
 
             if (filters.ConditionId.HasValue)
-            {
                 query = query.Where(x => x.ConditionId == filters.ConditionId);
-            }
 
             if (filters.GenreId.HasValue)
-            {
                 query = query.Where(x => x.GenreId == filters.GenreId);
-            }
 
             if (filters.OfferStatus.HasValue)
-            {
                 query = query.Where(x => x.OfferStatus == filters.OfferStatus);
-            }
 
-            query = query.Include(x => x.Customer)
+            query = query
+                .Include(x => x.Customer)
                 .Include(x => x.Condition)
                 .Include(x => x.Genre);
-         
-                
 
             var result = new PaginatedList<Offer>(query, pageIndex, pageSize);
-
             await result.PopulateAsync();
-
             return result;
         }
 
