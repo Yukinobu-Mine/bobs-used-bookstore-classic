@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Web;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Web.Helpers
 {
@@ -15,10 +15,8 @@ namespace Bookstore.Web.Helpers
         public override bool IsValid(object value)
         {
             if (value == null) return true;
-
-            if (!(value is HttpPostedFileBase file)) return base.IsValid(value);
-
-            return file.ContentLength <= maxFileSize;
+            if (!(value is IFormFile file)) return base.IsValid(value);
+            return file.Length <= maxFileSize;
         }
 
         public override string FormatErrorMessage(string name)
