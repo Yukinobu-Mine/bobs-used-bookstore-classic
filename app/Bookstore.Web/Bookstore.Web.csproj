@@ -13,7 +13,6 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.416.5" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.404.10" />
     <PackageReference Include="AWS.Logger.Core" Version="3.3.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0" />
@@ -25,15 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Bookstore.Data\Bookstore.Data.csproj" />
     <ProjectReference Include="..\Bookstore.Common\Bookstore.Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Web.config" />
-    <Content Remove="Web.Debug.config" />
-    <Content Remove="Web.Release.config" />
-    <Content Remove="Views\Web.config" />
-    <Content Remove="Areas\Admin\Views\web.config" />
-    <None Include="Web.config" />
-    <None Include="Web.Debug.config" />
-    <None Include="Web.Release.config" />
   </ItemGroup>
 </Project>
